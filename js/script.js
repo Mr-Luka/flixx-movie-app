@@ -1,6 +1,13 @@
-const global = {
-    currentPage: window.location.pathname
+const global = { // global state variable, so I can access it throught functions
+    currentPage: window.location.pathname,
+    search: {
+        term: '',
+        type: '',
+        page: 1,
+        totalPages: 1
+    }
 }
+
 console.log(global.currentPage) // getting a current page
 // If I click shows, it will show: /shows.html
 
@@ -227,6 +234,21 @@ function displayBackgroundImage(type, backgroundPath) {
     } else {
         document.querySelector('#show-details').appendChild(overlayDiv)
     }
+};
+
+
+// Search Movies/Shows
+async function search() {
+    const queryString = window.location.search; // ?type=movie&search-term=dsd  Thats considered queryString
+    const urlParams = new URLSearchParams(queryString);
+    global.search.type = urlParams.get('type') // movie or tv-show
+    global.search.term = urlParams.get('search-term') // in search.html (name='search-term')
+
+    if(global.search.term !== '' && global.search.term !== null) {
+        // @todo - make request and display results
+    } else {
+        showAlert('Please enter a search term');
+    }
 }
 
 
@@ -300,6 +322,15 @@ function highlightActiveLink() {
     })
 }
 
+
+// Show Alert
+function showAlert(message, className) {
+    const alertEl = document.createElement('div');
+    alertEl.classList.add('alert', className);
+    alertEl.appendChild(document.createTextNode(message));
+    document.querySelector('#alert').appendChild(alertEl);
+}
+
 // function that will add comma
 function addCommasToNumber(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -324,7 +355,7 @@ function init() { // page router
             displayShowDetails();
             break;
         case '/search.html':
-            console.log('Search');
+            search();
             break;
     }
     highlightActiveLink(); // it will fire off only on the page we are at
