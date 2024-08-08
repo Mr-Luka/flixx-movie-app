@@ -272,6 +272,11 @@ async function search() {
 
 // Function to display search results
 function displaySearchResults(results) {
+    // clear previous results
+    document.querySelector('#search-results').innerHTML = '';
+    document.querySelector('#search-results-heading').innerHTML = '';
+    document.querySelector('#pagination').innerHTML = '';
+
         results.forEach(result=> {
         const div = document.createElement('div');
         div.classList.add('card'); // global.search.type will be grabbing either movie or show, depending what we are searching
@@ -330,6 +335,14 @@ function displayPagination(){
     if(global.search.page === global.search.totalPages){
         document.querySelector('#next').disabled = true;
     }
+
+
+    // Next page
+    document.querySelector('#next').addEventListener('click', async ()=> {
+        global.search.page++;
+        const { results, total_pages } = await searchAPIData();
+        displaySearchResults(results);
+    })
 }
 
 
@@ -402,7 +415,7 @@ async function searchAPIData() {
 
     const response = await fetch(
         `${API_URL}search/${global.search.type}?api_key=${API_KEY}&
-        language=en-US&query=${global.search.term}`);
+        language=en-US&query=${global.search.term}&page=${global.search.page}`);
 
     const data = await response.json();
 
