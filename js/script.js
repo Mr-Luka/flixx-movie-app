@@ -246,6 +246,31 @@ async function displaySlider() {
             </h4>
         `;
         document.querySelector('.swiper-wrapper').appendChild(div);
+        initSwiper();
+    })
+}
+// function to add option to the swiper
+function initSwiper() {
+    const swiper = new Swiper('.swiper', { // these are all the parameters from their page
+        slidesPerView: 1,
+        spaceBetween: 30,
+        freeMode: true,
+        loop: true,
+        autoplay: {
+            delay: 4000, // 4 seconds
+            disableOnInteraction: false,  // when you hover over it stops
+        },
+        breakpoints: { // pixels when we watch from phone, computer ... sizes
+            500: {
+                slidesPerView: 2
+            },
+            700: {
+                slidesPerView: 3
+            },
+            1200: {
+                slidesPerView: 4
+            },
+        }
     })
 }
 
