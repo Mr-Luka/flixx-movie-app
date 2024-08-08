@@ -5,6 +5,10 @@ const global = { // global state variable, so I can access it throught functions
         type: '',
         page: 1,
         totalPages: 1
+    },
+    api: {
+        apiKey: '5ffe25a4c577dde1c72e53c30bb92fd2',
+        apiUrl: 'https://api.themoviedb.org/3/'
     }
 }
 
@@ -246,6 +250,8 @@ async function search() {
 
     if(global.search.term !== '' && global.search.term !== null) {
         // @todo - make request and display results
+        const results = await searchAPIData();
+        console.log(results)
     } else {
         showAlert('Please enter a search term');
     }
@@ -299,12 +305,29 @@ function initSwiper() {
 
 // Fetch data from TMDB API
 async function fetchAPIData(endpoint) {
-    const API_KEY = '5ffe25a4c577dde1c72e53c30bb92fd2';
-    const API_URL = 'https://api.themoviedb.org/3/';
+    const API_KEY = global.api.apiKey;
+    const API_URL = global.api.apiUrl;
 
     showSpinner();
 
     const response = await fetch(`${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`);
+
+    const data = await response.json();
+
+    hideSpinner();
+    return data;
+}
+
+// Make request to Search
+async function searchAPIData() {
+    const API_KEY = global.api.apiKey;
+    const API_URL = global.api.apiUrl;
+
+    showSpinner();
+
+    const response = await fetch(
+        `${API_URL}search/${global.search.type}?api_key=${API_KEY}&
+        language=en-US&query=${global.search.term}`);
 
     const data = await response.json();
 
@@ -329,6 +352,8 @@ function showAlert(message, className) {
     alertEl.classList.add('alert', className);
     alertEl.appendChild(document.createTextNode(message));
     document.querySelector('#alert').appendChild(alertEl);
+
+    setTimeout(()=> alertEl.remove(), 3000)
 }
 
 // function that will add comma
