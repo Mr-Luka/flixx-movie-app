@@ -319,6 +319,17 @@ function displayPagination(){
         <div class="page-counter">Page ${global.search.page} of ${global.search.totalPages}</div>
     `;
     document.querySelector('#pagination').appendChild(div);
+
+    // Disable Prev button if on first page
+    if(global.search.page === 1){
+        document.querySelector('#prev').disabled = true;
+    }
+
+
+    // Disable the next button if on last page
+    if(global.search.page === global.search.totalPages){
+        document.querySelector('#next').disabled = true;
+    }
 }
 
 
