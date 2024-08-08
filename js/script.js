@@ -4,7 +4,8 @@ const global = { // global state variable, so I can access it throught functions
         term: '',
         type: '',
         page: 1,
-        totalPages: 1
+        totalPages: 1,
+        totalResults: 0
     },
     api: {
         apiKey: '5ffe25a4c577dde1c72e53c30bb92fd2',
@@ -250,7 +251,12 @@ async function search() {
 
     if(global.search.term !== '' && global.search.term !== null) {
         // @todo - make request and display results
-        const {results, total_pages, page} = await searchAPIData();
+        const { results, total_pages, page, total_results } = await searchAPIData();
+
+        global.search.page = page;
+        global.search.totalPages = total_pages;
+        global.search.totalResults = total_results;
+
         if(results.length === 0) {
             showAlert('No results found');
             return;
@@ -292,6 +298,10 @@ function displaySearchResults(results) {
             </p>
           </div>
         `;
+
+        document.querySelector('#search-results-heading').innerHTML = `
+        <h2>${results.length} of ${global.search.totalResults} Results for ${global.search.term}</h2>
+        `
         document.querySelector('#search-results').appendChild(div);
     })
 }
